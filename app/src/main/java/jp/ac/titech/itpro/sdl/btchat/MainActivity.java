@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar connectionProgress;
     private ListView chatLogView;
     private EditText inputText;
-    private Button sendButton;
+    private Button sendButton, soundButton;
 
     private ArrayList<ChatMessage> chatLog;
     private ArrayAdapter<ChatMessage> chatLogAdapter;
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         connectionProgress = findViewById(R.id.connection_progress);
         inputText = findViewById(R.id.input_text);
         sendButton = findViewById(R.id.send_button);
+        soundButton = findViewById(R.id.sound_button);
         chatLogView = findViewById(R.id.chat_log_view);
         chatLogAdapter = new ArrayAdapter<ChatMessage>(this, 0, chatLog) {
             @Override
@@ -290,6 +291,20 @@ public class MainActivity extends AppCompatActivity {
             chatLogAdapter.notifyDataSetChanged();
             chatLogView.smoothScrollToPosition(chatLog.size());
             inputText.getEditableText().clear();
+        }
+    }
+
+    public void onClickSoundButton(View v) {
+        Log.d(TAG, "onClickSoundButton");
+        if (commThread != null) {
+            message_seq++;
+            long time = System.currentTimeMillis();
+            ChatMessage message = new ChatMessage(message_seq, time, devName);
+            commThread.send(message);
+//            chatLogAdapter.add(message);
+//            chatLogAdapter.notifyDataSetChanged();
+//            chatLogView.smoothScrollToPosition(chatLog.size());
+//            inputText.getEditableText().clear();
         }
     }
 
@@ -691,9 +706,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMessage(ChatMessage message) {
-        chatLogAdapter.add(message);
-        chatLogAdapter.notifyDataSetChanged();
-        chatLogView.smoothScrollToPosition(chatLogAdapter.getCount());
+        if (message.isSound) {
+            soundPool.play(sound_connected, 1.0f, 1.0f, 0, 0, 1);
+            }
+        else {
+            chatLogAdapter.add(message);
+            chatLogAdapter.notifyDataSetChanged();
+            chatLogView.smoothScrollToPosition(chatLogAdapter.getCount());
+        }
     }
 
     private void disconnect() {

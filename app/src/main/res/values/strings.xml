@@ -8,6 +8,7 @@
 
     <string name="send_button_label">Send</string>
     <string name="input_text_hint">Message</string>
+    <string name="sound_button_label">Sound!</string>
 
     <string name="menu_connect_title">Connect</string>
     <string name="menu_disconnect_title">Disconnect</string>
